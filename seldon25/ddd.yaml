@@ -1,0 +1,51 @@
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  labels:
+    components: seldon-core
+    entity: online-model
+  name: ddd
+  namespace: app-demo
+spec:
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - env:
+          - name: GUNICORN_WORKERS
+            value: '2'
+          - name: GUNICORN_THREADS
+            value: '2'
+          livenessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          name: ddd
+          readinessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+    graph:
+      envSecretRefName: seldon-secret
+      implementation: MLFLOW_SERVER
+      modelUri: s3://app-demo/1/3af7762f3d75462bb3fd0a944104466c/artifacts/model
+      name: ddd
+    name: ddd
+    replicas: 1
