@@ -1,0 +1,51 @@
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  labels:
+    components: seldon-core
+    entity: online-model
+  name: modelz
+  namespace: app-demode
+spec:
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - env:
+          - name: GUNICORN_WORKERS
+            value: '2'
+          - name: GUNICORN_THREADS
+            value: '2'
+          livenessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          name: modelz
+          readinessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          resources:
+            limits:
+              cpu: 3
+              memory: 3Gi
+            requests:
+              cpu: 3
+              memory: 3Gi
+    graph:
+      envSecretRefName: seldon-secret
+      implementation: MLFLOW_SERVER
+      modelUri: s3://app-demode/1/0ffe0fa3cd604edbb524feb745d37d12/artifacts/model
+      name: modelz
+    name: modelz
+    replicas: 1
