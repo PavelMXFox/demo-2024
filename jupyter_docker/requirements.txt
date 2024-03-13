@@ -1,0 +1,5 @@
+hive-metastore-client==1.0.9
+spark==0.2.1
+thrift==0.13.0
+pyarrow==12.0.1
+feedparser==6.0.10
