@@ -1,0 +1,53 @@
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  labels:
+    components: seldon-core
+    entity: online-model
+  name: default
+  namespace: app-cthulhu
+spec:
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - env:
+          - name: GUNICORN_WORKERS
+            value: '2'
+          - name: GUNICORN_THREADS
+            value: '2'
+          livenessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          name: default
+          readinessProbe:
+            failureThreshold: 200
+            httpGet:
+              path: /health/ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 80
+            periodSeconds: 5
+            successThreshold: 1
+          resources:
+            limits:
+              cpu: '2.0'
+              memory: 2.0Gi
+            requests:
+              cpu: '2.0'
+              memory: 2.0Gi
+        serviceAccountName: default-editor
+        terminationGracePeriodSeconds: 0
+    graph:
+      envSecretRefName: seldon-secret
+      implementation: MLFLOW_SERVER
+      modelUri: s3://app-cthulhu/1/fc1b7971c7f54a868de3ec531b93f020/artifacts/model
+      name: default
+    name: model
+    replicas: 1
