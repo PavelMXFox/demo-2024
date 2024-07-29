@@ -15,7 +15,7 @@ except Exception as e:
 #IMAGE='registry.neomsa.ru/docker-mlops/mlops/airflow:executor-13'
 #IMAGE='registry.neomsa.ru/docker-mlops/mlops/airflow255:executor-2'
 #IMAGE='registry.neomsa.ru/docker-mlops/mlops/airflow:2.2.5-demo2'
-IMAGE='harbor.neoflex.ru/dognauts/dognauts-airflow:2.5.3-py3.8-v6'
+IMAGE='harbor-dognauts.neoflex.ru/dognauts/dognauts-airflow:2.5.3-py3.8-v6'
 
 RANDOM_SEED = 42
 
